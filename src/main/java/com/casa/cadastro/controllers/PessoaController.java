@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.casa.cadastro.models.Pessoa;
 import com.casa.cadastro.models.dto.PessoaDto;
-import com.casa.cadastro.services.PessoaService;
+import com.casa.cadastro.services.impl.PessoaService;
 
 @RestController
 @RequestMapping("/Pessoa")
@@ -70,13 +70,11 @@ public class PessoaController {
 
 	@PutMapping("/Atualizar/{pessoaId}")
 	public ResponseEntity<Pessoa> atualizarPorId(@Valid @PathVariable Long pessoaId, @RequestBody Pessoa pessoa) {
-		Pessoa p = pessoaService.buscarPorId(pessoaId);
-		if (p != null) {
-			pessoa.setId(pessoaId);
-			p = pessoaService.atualizar(pessoa, pessoaId);
-			return ResponseEntity.ok(p);
+		Pessoa pessoaEncontrada = pessoaService.atualizar(pessoaId, pessoa);
+		if (pessoaEncontrada == null) {
+			return ResponseEntity.notFound().build();
 		}
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok(pessoaEncontrada);
 	}
 
 	@DeleteMapping("/Deletar")

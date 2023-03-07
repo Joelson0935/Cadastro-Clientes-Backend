@@ -20,13 +20,12 @@ public class ControllerExeption {
 		return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)   // HttpServletRequest
-	public ResponseEntity<ErrorsList> argumentoNaoValido(MethodArgumentNotValidException e, HttpServletRequest request) {
+	@ExceptionHandler(MethodArgumentNotValidException.class) // HttpServletRequest
+	public ResponseEntity<ErrorsList> argumentoInvalido(MethodArgumentNotValidException e, HttpServletRequest request) {
 		ErrorsList errorsList = new ErrorsList("Argumento Irregular", HttpStatus.BAD_REQUEST.value(), LocalDate.now());
 		for (FieldError field : e.getBindingResult().getFieldErrors()) {
 			errorsList.setCampos(field.getField(), field.getDefaultMessage());
 		}
 		return new ResponseEntity<ErrorsList>(errorsList, HttpStatus.BAD_REQUEST);
 	}
-
 }

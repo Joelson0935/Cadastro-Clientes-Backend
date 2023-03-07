@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.casa.cadastro.models.Login;
-import com.casa.cadastro.services.LoginService;
+import com.casa.cadastro.services.impl.LoginService;
 
 @RestController
 @RequestMapping("/Login")
@@ -76,10 +76,9 @@ public class LoginController {
 	@PutMapping("/Atualizar/{loginId}")
 	public ResponseEntity<Login> atualizarPorId(@Valid @PathVariable Long loginId,
 			@RequestBody Login login) {
-		Login l = loginService.buscarPorId(loginId);
-		if (l != null) {
-			login.setId(loginId);
-			login = loginService.atualizar(login, loginId);
+		Login loginEncontrado = loginService.buscarPorId(loginId);
+		if (loginEncontrado != null) {
+			login = loginService.atualizar(loginId, login);
 			return ResponseEntity.ok(login);
 		}
 		return ResponseEntity.notFound().build();

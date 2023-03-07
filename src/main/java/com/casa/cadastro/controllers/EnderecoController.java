@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.casa.cadastro.models.Endereco;
-import com.casa.cadastro.services.EnderecoService;
+import com.casa.cadastro.services.impl.EnderecoService;
 
 @RestController
 @RequestMapping("/Endereco")
@@ -67,10 +67,9 @@ public class EnderecoController {
 	@PutMapping("/Atualizar/{enderecoId}")
 	public ResponseEntity<Endereco> atualizarPorId(@Valid @PathVariable Long enderecoId,
 			@RequestBody Endereco endereco) {
-		Endereco e = enderecoService.buscarPorId(enderecoId);
-		if (e != null) {
-			endereco.setId(enderecoId);
-			endereco = enderecoService.atualizar(endereco, enderecoId);
+		Endereco enderecoEncontrado = enderecoService.buscarPorId(enderecoId);
+		if (enderecoEncontrado != null) {
+			endereco = enderecoService.atualizar(enderecoId, endereco);
 			return ResponseEntity.ok(endereco);
 		}
 		return ResponseEntity.notFound().build();

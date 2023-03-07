@@ -1,4 +1,4 @@
-package com.casa.cadastro.services;
+package com.casa.cadastro.services.impl;
 
 import java.util.List;
 
@@ -10,40 +10,48 @@ import org.springframework.stereotype.Service;
 import com.casa.cadastro.models.Endereco;
 import com.casa.cadastro.models.Pessoa;
 import com.casa.cadastro.repositorys.PessoaRepository;
+import com.casa.cadastro.services.Servico;
 
 @Service
-public class PessoaService {
+public class PessoaService implements Servico<Pessoa> {
 
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
+	@Override
 	public Pessoa salvar(Pessoa pessoa) {
 		Endereco endereco = new Endereco(pessoa.getEndereco().getCep(), pessoa.getEndereco().getLogradouro(),
 				pessoa.getEndereco().getComplemento(), pessoa.getEndereco().getBairro(),
 				pessoa.getEndereco().getLocalidade(), pessoa.getEndereco().getUf(), pessoa.getEndereco().getIbge(),
 				pessoa.getEndereco().getGia(), pessoa.getEndereco().getDdd(), pessoa.getEndereco().getSiafi());
 
-		Pessoa p = new Pessoa(pessoa.getId(), pessoa.getNome(), pessoa.getSobrenome(), pessoa.getIdade(),
+		Pessoa novaPessoa = new Pessoa(pessoa.getId(), pessoa.getNome(), pessoa.getSobrenome(), pessoa.getIdade(),
 				pessoa.getSexo(), pessoa.getTelefone(), endereco);
 
-		pessoa = pessoaRepository.save(p);
+		pessoa = pessoaRepository.save(novaPessoa);
 		return pessoa;
 	}
 
-	public Pessoa atualizar(Pessoa pessoa, Long id) {
-		Pessoa p = buscarPorId(id);
-		if (p != null) {
-			pessoa = pessoaRepository.save(pessoa);
-			return pessoa;
+	@Override
+	public Pessoa atualizar(Long id, Pessoa pessoa) {
+		var novaPessoa = pessoaRepository.findById(id).orElseThrow(() -> new RuntimeException("Pessoa não encontrada"));
+		if (pessoa.getEndereco() == null) {
+			pessoa.setEndereco(novaPessoa.getEndereco());
 		}
-		return null;
-	}
-
-	public Pessoa buscarPorId(Long id) {
-		Pessoa pessoa = pessoaRepository.findById(id).orElseThrow(() -> new RuntimeException(id + " Não encontrado."));
+		pessoa.setId(id);
+		novaPessoa = pessoa;
+		novaPessoa = pessoaRepository.save(pessoa);
 		return pessoa;
 	}
 
+	@Override
+	public Pessoa buscarPorId(Long id) {
+		Pessoa pessoaEncontrada = pessoaRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException(id + " Não encontrado."));
+		return pessoaEncontrada;
+	}
+
+	@Override
 	public List<Pessoa> buscarListaCompleta() {
 		List<Pessoa> pessoas = pessoaRepository.findAll();
 		return pessoas;
@@ -54,6 +62,7 @@ public class PessoaService {
 		return pessoas;
 	}
 
+	@Override
 	public void deletar(Long id) {
 		pessoaRepository.findById(id).orElseThrow(() -> new RuntimeException(id + " não foi encontrado"));
 		pessoaRepository.deleteById(id);
