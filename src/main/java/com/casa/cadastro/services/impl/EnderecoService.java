@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.casa.cadastro.models.Endereco;
 import com.casa.cadastro.repositorys.EnderecoRepository;
 import com.casa.cadastro.services.Servico;
+import com.casa.cadastro.services.exception.ObjetoNaoEncontrado;
 
 @Service
 public class EnderecoService implements Servico<Endereco> {
@@ -26,7 +27,7 @@ public class EnderecoService implements Servico<Endereco> {
 	@Override
 	public Endereco atualizar(Long id, Endereco endereco) {
 		Endereco enderecoEncontrado = enderecoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException(id + " Não encontrado."));
+				.orElseThrow(() -> new ObjetoNaoEncontrado(id + " Não encontrado."));
 		endereco.setId(id);
 		enderecoEncontrado = endereco;
 		enderecoEncontrado = enderecoRepository.save(enderecoEncontrado);
@@ -36,7 +37,7 @@ public class EnderecoService implements Servico<Endereco> {
 	@Override
 	public Endereco buscarPorId(Long id) {
 		Endereco endereco = enderecoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException(id + " Não encontrado."));
+				.orElseThrow(() -> new ObjetoNaoEncontrado(id + " Não encontrado."));
 		return endereco;
 	}
 
@@ -54,7 +55,7 @@ public class EnderecoService implements Servico<Endereco> {
 
 	@Override
 	public void deletar(Long id) {
-		enderecoRepository.findById(id).orElseThrow(() -> new RuntimeException(id + " não foi encontrado"));
+		enderecoRepository.findById(id).orElseThrow(() -> new ObjetoNaoEncontrado(id + " não foi encontrado"));
 		enderecoRepository.deleteById(id);
 	}
 

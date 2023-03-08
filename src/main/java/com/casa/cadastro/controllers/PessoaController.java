@@ -69,7 +69,7 @@ public class PessoaController {
 	}
 
 	@PutMapping("/Atualizar/{pessoaId}")
-	public ResponseEntity<Pessoa> atualizarPorId(@Valid @PathVariable Long pessoaId, @RequestBody Pessoa pessoa) {
+	public ResponseEntity<Pessoa> atualizarPorId(@PathVariable Long pessoaId, @Valid @RequestBody Pessoa pessoa) {
 		Pessoa pessoaEncontrada = pessoaService.atualizar(pessoaId, pessoa);
 		if (pessoaEncontrada == null) {
 			return ResponseEntity.notFound().build();

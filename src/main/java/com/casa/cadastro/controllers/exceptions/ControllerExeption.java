@@ -8,14 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+import com.casa.cadastro.services.exception.ObjetoNaoEncontrado;
+
+@RestControllerAdvice
 public class ControllerExeption {
 
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<Error> objectNotFound() {
+	@ExceptionHandler(ObjetoNaoEncontrado.class)
+	public ResponseEntity<Error> objectNotFound(ObjetoNaoEncontrado e) {
 		Error error = new Error("Objeto Não Encontrado", HttpStatus.NOT_FOUND.value(), LocalDate.now());
 		return new ResponseEntity<Error>(error, HttpStatus.NOT_FOUND);
 	}
@@ -28,4 +30,5 @@ public class ControllerExeption {
 		}
 		return new ResponseEntity<ErrorsList>(errorsList, HttpStatus.BAD_REQUEST);
 	}
+
 }

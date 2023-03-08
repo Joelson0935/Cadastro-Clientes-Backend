@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.casa.cadastro.models.Login;
 import com.casa.cadastro.repositorys.LoginRepository;
 import com.casa.cadastro.services.Servico;
+import com.casa.cadastro.services.exception.ObjetoNaoEncontrado;
 
 @Service
 public class LoginService implements Servico<Login> {
@@ -26,7 +27,7 @@ public class LoginService implements Servico<Login> {
 	@Override
 	public Login atualizar(Long id, Login login) {
 		Login loginEncontrado = loginRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException(id + " Não encontrado."));
+				.orElseThrow(() -> new ObjetoNaoEncontrado(id + " Não encontrado."));
 		login.setId(id);
 		loginEncontrado = login;
 		loginEncontrado = loginRepository.save(loginEncontrado);
@@ -35,14 +36,14 @@ public class LoginService implements Servico<Login> {
 
 	@Override
 	public Login buscarPorId(Long id) {
-		Login login = loginRepository.findById(id).orElseThrow(() -> new RuntimeException(id + " Não encontrado."));
+		Login login = loginRepository.findById(id).orElseThrow(() -> new ObjetoNaoEncontrado(id + " Não encontrado."));
 		return login;
 	}
 
 	public Login buscarPorEmail(String email) {
 		Login login = loginRepository.buscarPorEmail(email);
 		if (login != null) {
-			new RuntimeException("Email Não Encontrado!");
+			new ObjetoNaoEncontrado("Email Não Encontrado!");
 		}
 		return login;
 	}
@@ -61,7 +62,7 @@ public class LoginService implements Servico<Login> {
 
 	@Override
 	public void deletar(Long id) {
-		loginRepository.findById(id).orElseThrow(() -> new RuntimeException(id + " não foi encontrado"));
+		loginRepository.findById(id).orElseThrow(() -> new ObjetoNaoEncontrado(id + " não foi encontrado"));
 		loginRepository.deleteById(id);
 	}
 

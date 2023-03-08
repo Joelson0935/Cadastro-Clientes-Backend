@@ -11,6 +11,7 @@ import com.casa.cadastro.models.Endereco;
 import com.casa.cadastro.models.Pessoa;
 import com.casa.cadastro.repositorys.PessoaRepository;
 import com.casa.cadastro.services.Servico;
+import com.casa.cadastro.services.exception.ObjetoNaoEncontrado;
 
 @Service
 public class PessoaService implements Servico<Pessoa> {
@@ -34,7 +35,8 @@ public class PessoaService implements Servico<Pessoa> {
 
 	@Override
 	public Pessoa atualizar(Long id, Pessoa pessoa) {
-		var novaPessoa = pessoaRepository.findById(id).orElseThrow(() -> new RuntimeException("Pessoa não encontrada"));
+		var novaPessoa = pessoaRepository.findById(id)
+				.orElseThrow(() -> new ObjetoNaoEncontrado("Pessoa não encontrada"));
 		if (pessoa.getEndereco() == null) {
 			pessoa.setEndereco(novaPessoa.getEndereco());
 		}
@@ -47,7 +49,7 @@ public class PessoaService implements Servico<Pessoa> {
 	@Override
 	public Pessoa buscarPorId(Long id) {
 		Pessoa pessoaEncontrada = pessoaRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException(id + " Não encontrado."));
+				.orElseThrow(() -> new ObjetoNaoEncontrado(id + " Não encontrado."));
 		return pessoaEncontrada;
 	}
 
@@ -64,7 +66,7 @@ public class PessoaService implements Servico<Pessoa> {
 
 	@Override
 	public void deletar(Long id) {
-		pessoaRepository.findById(id).orElseThrow(() -> new RuntimeException(id + " não foi encontrado"));
+		pessoaRepository.findById(id).orElseThrow(() -> new ObjetoNaoEncontrado(id + " não foi encontrado"));
 		pessoaRepository.deleteById(id);
 	}
 
